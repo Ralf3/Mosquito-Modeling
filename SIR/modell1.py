@@ -9,7 +9,8 @@ Created on Mon Jul  9 10:32:57 2018
 """ model combines the space simu with the time simu by stepsize=1
 """
 import sys
-sys.path.append('/datadisk/pya/PythonCode_Suman')
+path='/datadisk/'
+sys.path.append(path+'Mosquito-Modeling/SIR')
 import space_simu 
 import time_simu 
 from osgeo import gdal
@@ -23,12 +24,11 @@ def read_ascii(filename):
     return g.ReadAsArray()
 
 # read the FuzzyResult as landscape
-path='/datadisk/pya/culifo_June_2018/culifo_regional/'
-landscape=read_ascii(path+'FuzzyResult_Version3_1981_2010.asc')
+landscape=read_ascii(path+'/Mosquito-Modeling/SIR/data/FuzzyResult_Version3_1981_2010.asc')
 R0=space_simu.region(landscape[1000:1250,4500:4750]) # R0: region without mosquitoes 
 R1=space_simu.region(landscape[4800:5050,700:950])   # R1: high mosquito region
 R2=space_simu.region(landscape[2900:3150,2200:2450]) # R2: no spread region
-path='/datadisk/pya/culifo_June_2018/culifo_regional/'
+
 #R.load_region(path+'region1.npy')
 # load the mosquitoes as list of objects
 #M=space_simu.mosquitoes(R2)
@@ -68,7 +68,7 @@ class SIMU():
         else:
             self.sir.KM=100*np.mean(self.space.R.R)
         self.factor=0.01   # 100/0.01 = 100000     
-        self.log_file=open(path+'log.csv','w')
+        self.log_file=open(path+'/Mosquito-Modeling/SIR/results/log.csv','w')
         s="t mosquitoes m infected SM IM\n"
         self.log_file.write(s)
         self.highestm=1    # start with an asumption 
@@ -119,8 +119,8 @@ class SIMU():
         self.log_file.write(s)
         
     def save_matrix(self):
-        np.save(path+'matrixm.npy',self.m)
-        np.save(path+'matrixi.npy',self.inf)
+        np.save(path+'/Mosquito-Modeling/SIR/results/matrixm.npy',self.m)
+        np.save(path+'/Mosquito-Modeling/SIR/results/matrixi.npy',self.inf)
         
         
 

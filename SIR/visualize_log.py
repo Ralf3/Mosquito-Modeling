@@ -13,8 +13,8 @@ import numpy as np
 import pylab as plt
 
 """ read the data in a pandas frame """
-path='/datadisk/pya/culifo_June_2018/culifo_regional/'
-log=pd.read_csv(path+'log.csv', sep=' ')
+path='/datadisk/'
+log=pd.read_csv(path+'/Mosquito-Modeling/SIR/results/log.csv', sep=' ')
 print(log.describe())
 
 # visualize the infected mosquitoes
@@ -36,8 +36,8 @@ plt.title('Mosquitoes over 5 years')
 plt.show()
 
 """ read teh spactial distributed mosquitoes"""
-m=np.load(path+'matrixm.npy')
-inf=np.load(path+'matrixi.npy')
+m=np.load(path+'/Mosquito-Modeling/SIR/results/matrixm.npy')
+inf=np.load(path+'/Mosquito-Modeling/SIR/results/matrixi.npy')
 
 plt.imshow(m)
 plt.colorbar()
