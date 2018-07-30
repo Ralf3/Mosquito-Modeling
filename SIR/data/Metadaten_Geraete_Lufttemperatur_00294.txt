@@ -1,0 +1,6 @@
+Stations_ID;Stationsname;Geo. Laenge [Grad];Geo. Breite [Grad];Stationshoehe [m];Geberhoehe ueber Grund [m];Von_Datum;Bis_Datum;Geraetetyp Name;Messverfahren;eor;
+294;Barsinghausen-Hohenbostel;;;;;;19920131;Gerätetyp unbekannt;Temperaturmessung, konv.;eor;
+294;Barsinghausen-Hohenbostel;9.43;52.32;110;2;19920201;19940731;Thermograph;Temperaturmessung, konv.;eor;
+294;Barsinghausen-Hohenbostel;9.43;52.32;110;2;19940801;20040630;Thermohygrograph;Temperatur- und Feuchtereg., konv.;eor;
+294;Barsinghausen-Hohenbostel;9.43;52.32;110;2;20040422;;PT 100 (Luft);Temperaturmessung, elektr.;eor;
+generiert: 07.03.2018 --  Deutscher Wetterdienst  --

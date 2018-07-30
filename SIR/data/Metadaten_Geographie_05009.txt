@@ -1,0 +1,6 @@
+Stations_id;Stationshoehe;Geogr.Breite;Geogr.Laenge;von_datum;bis_datum;Stationsname
+  5009;   46.00; 53.7667; 12.6167;18900101;19461031;Teterow
+  5009;   68.00; 53.7620; 12.6300;19461101;19521026;Teterow
+  5009;   46.00; 53.7623; 12.6165;19521027;20040630;Teterow
+  5009;   38.00; 53.7610; 12.5574;20040701;20110903;Teterow
+  5009;   38.00; 53.7610; 12.5574;20110904;        ;Teterow

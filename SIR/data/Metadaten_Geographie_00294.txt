@@ -1,0 +1,2 @@
+Stations_id;Stationshoehe;Geogr.Breite;Geogr.Laenge;von_datum;bis_datum;Stationsname
+   294;  110.00; 52.3199;  9.4300;19920201;        ;Barsinghausen-Hohenbostel

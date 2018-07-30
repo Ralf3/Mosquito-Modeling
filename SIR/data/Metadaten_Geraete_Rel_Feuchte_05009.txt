@@ -1,0 +1,23 @@
+Stations_ID;Stationsname;Geo. Laenge [Grad];Geo. Breite [Grad];Stationshoehe [m];Geberhoehe ueber Grund [m];Von_Datum;Bis_Datum;Geraetetyp Name;Messverfahren;eor;
+5009;Teterow;;;;;;19491204;Gerätetyp unbekannt;Feuchteregistrieung, konv.;eor;
+5009;Teterow;12.63;53.76;68;2;19491205;19521026;Hygrograph nach Frankenberg;Feuchteregistrieung, konv.;eor;
+5009;Teterow;12.62;53.76;46;2;19521027;19550801;Hygrograph nach Frankenberg;Feuchteregistrieung, konv.;eor;
+5009;Teterow;12.62;53.76;46;2;19560501;19620315;Hygrograph nach Frankenberg;Feuchteregistrieung, konv.;eor;
+5009;Teterow;12.62;53.76;46;2;19620315;19620701;Thermohygrograph;Temperatur- und Feuchtereg., konv.;eor;
+5009;Teterow;12.62;53.76;46;2;19620701;20040630;Hygrograph nach Frankenberg;Feuchteregistrieung, konv.;eor;
+5009;Teterow;12.62;53.76;46;2;19770101;19900120;Lithium_Chlorid-Taupunktfühler;Feuchtemessung, elektr.;eor;
+5009;Teterow;12.62;53.76;46;2;19900228;19900301;Lithium_Chlorid-Taupunktfühler;Feuchtemessung, elektr.;eor;
+5009;Teterow;12.62;53.76;46;2;19900320;19900826;Lithium_Chlorid-Taupunktfühler;Feuchtemessung, elektr.;eor;
+5009;Teterow;12.62;53.76;46;2;19900831;19920909;Lithium_Chlorid-Taupunktfühler;Feuchtemessung, elektr.;eor;
+5009;Teterow;12.62;53.76;46;2;19910312;19911031;Elektrisches Aspirationspsychrometer-2 (EAP-2);Feuchtemessung, elektr.;eor;
+5009;Teterow;12.62;53.76;46;2;19920909;19950713;HYGROMER MP300;Feuchtemessung, elektr.;eor;
+5009;Teterow;12.62;53.76;46;2;19950717;19980510;HYGROMER MP300;Feuchtemessung, elektr.;eor;
+5009;Teterow;12.62;53.76;46;2;19980512;19990713;HYGROMER MP300;Feuchtemessung, elektr.;eor;
+5009;Teterow;12.62;53.76;46;2;19990721;20001030;HYGROMER MP300;Feuchtemessung, elektr.;eor;
+5009;Teterow;12.62;53.76;46;2;20001102;20001130;HYGROMER MP300;Feuchtemessung, elektr.;eor;
+5009;Teterow;12.62;53.76;46;2;20001205;20020307;HYGROMER MP300;Feuchtemessung, elektr.;eor;
+5009;Teterow;12.62;53.76;46;2;20020311;20030521;HYGROMER MP300;Feuchtemessung, elektr.;eor;
+5009;Teterow;12.62;53.76;46;2;20030526;20040630;HYGROMER MP300;Feuchtemessung, elektr.;eor;
+5009;Teterow;12.56;53.76;38;2;20040701;20171011;Feuchtesonde HMP45D;Feuchtemessung, elektr.;eor;
+5009;Teterow;12.56;53.76;38;2;20171012;;EE33;Feuchtemessung, elektr.;eor;
+generiert: 07.03.2018 --  Deutscher Wetterdienst  --

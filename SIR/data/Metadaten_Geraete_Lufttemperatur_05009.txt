@@ -1,0 +1,15 @@
+Stations_ID;Stationsname;Geo. Laenge [Grad];Geo. Breite [Grad];Stationshoehe [m];Geberhoehe ueber Grund [m];Von_Datum;Bis_Datum;Geraetetyp Name;Messverfahren;eor;
+5009;Teterow;;;;;;19461031;Gerätetyp unbekannt;Temperaturmessung, konv.;eor;
+5009;Teterow;12.63;53.76;68;2;19461101;19521026;Thermograph;Temperaturmessung, konv.;eor;
+5009;Teterow;12.62;53.76;46;2;19521027;19620315;Thermograph;Temperaturmessung, konv.;eor;
+5009;Teterow;12.62;53.76;46;2;19620315;19620701;Thermohygrograph;Temperatur- und Feuchtereg., konv.;eor;
+5009;Teterow;12.62;53.76;46;2;19620701;20040630;Thermograph;Temperaturmessung, konv.;eor;
+5009;Teterow;12.62;53.76;46;2;19770101;19950713;PT 100 (Luft);Temperaturmessung, elektr.;eor;
+5009;Teterow;12.62;53.76;46;2;19950717;19980510;PT 100 (Luft);Temperaturmessung, elektr.;eor;
+5009;Teterow;12.62;53.76;46;2;19980512;19990713;PT 100 (Luft);Temperaturmessung, elektr.;eor;
+5009;Teterow;12.62;53.76;46;2;19990721;20020307;PT 100 (Luft);Temperaturmessung, elektr.;eor;
+5009;Teterow;12.62;53.76;46;2;20020311;20030521;PT 100 (Luft);Temperaturmessung, elektr.;eor;
+5009;Teterow;12.62;53.76;46;2;20030526;20030817;PT 100 (Luft);Temperaturmessung, elektr.;eor;
+5009;Teterow;12.62;53.76;46;2;20030820;20040630;PT 100 (Luft);Temperaturmessung, elektr.;eor;
+5009;Teterow;12.56;53.76;38;2;20040701;;PT 100 (Luft);Temperaturmessung, elektr.;eor;
+generiert: 07.03.2018 --  Deutscher Wetterdienst  --

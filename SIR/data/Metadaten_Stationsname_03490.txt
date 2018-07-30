@@ -1,0 +1,2 @@
+Stations_ID;Stationsname;Von_Datum;Bis_Datum
+  3490;Neuenahr, Bad-Ahrweiler                 ;19021001;

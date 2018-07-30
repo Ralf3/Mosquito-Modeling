@@ -1,0 +1,7 @@
+Stations_ID;Stationsname;Geo. Laenge [Grad];Geo. Breite [Grad];Stationshoehe [m];Geberhoehe ueber Grund [m];Von_Datum;Bis_Datum;Geraetetyp Name;Messverfahren;eor;
+3490;Neuenahr, Bad-Ahrweiler;;;;;;19490930;Gerätetyp unbekannt;Feuchteregistrieung, konv.;eor;
+3490;Neuenahr, Bad-Ahrweiler;7.08;50.53;111;2;19491001;20040831;Hygrograph nach Frankenberg;Feuchteregistrieung, konv.;eor;
+3490;Neuenahr, Bad-Ahrweiler;7.08;50.53;111;2;19491001;20040831;Thermohygrograph;Temperatur- und Feuchtereg., konv.;eor;
+3490;Neuenahr, Bad-Ahrweiler;7.08;50.53;111;2;20030707;20040831;Feuchtesonde HMP45D;Feuchtemessung, elektr.;eor;
+3490;Neuenahr, Bad-Ahrweiler;7.09;50.53;111;2;20040901;;Feuchtesonde HMP45D;Feuchtemessung, elektr.;eor;
+generiert: 07.03.2018 --  Deutscher Wetterdienst  --
