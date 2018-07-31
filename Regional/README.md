@@ -1,4 +1,4 @@
-# Regional modeling usong fuzzy modeling
+# Regional modeling using fuzzy modeling
 
 The idea here is to build a fuzzy model based on SAMT2 which contains three inputs: 
 
@@ -9,8 +9,8 @@ The idea here is to build a fuzzy model based on SAMT2 which contains three inpu
 The landscape was generated using corine landcover and Atkis data. The transfer tables which
 change the coded landuse types to suitablitlity indices are given in:
 
-*      Transfer_Corine.py
-*      Transfer_Atkis.py
+*	Transfer_Corine.py
+*	Transfer_Atkis.py
 
 The input data are compressed in data:
 
