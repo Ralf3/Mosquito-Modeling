@@ -24,7 +24,7 @@ def read_ascii(filename):
     return g.ReadAsArray()
 
 # read the FuzzyResult as landscape
-landscape=read_ascii(path+'/Mosquito-Modeling/SIR/data/FuzzyResult_Version3_1981_2010.asc')
+landscape=read_ascii(path+'Mosquito-Modeling/SIR/data/FuzzyResult_Version3_1981_2010.asc')
 R0=space_simu.region(landscape[1000:1250,4500:4750]) # R0: region without mosquitoes 
 R1=space_simu.region(landscape[4800:5050,700:950])   # R1: high mosquito region
 R2=space_simu.region(landscape[2900:3150,2200:2450]) # R2: no spread region

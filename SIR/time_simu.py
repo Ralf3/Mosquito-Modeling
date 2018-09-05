@@ -19,8 +19,7 @@ Created on Mon Jul  9 09:39:41 2018
 """ SIR Model according to Franz Rubel Vienna for Mosquotoes """
 
 import numpy as np
-from scipy.special import gamma
-
+from scipy.stats import gamma
    
 class SIR:
     def __init__(self,lat):
@@ -113,13 +112,16 @@ class SIR:
     """ the bird part of parameters """
     
     def bB(self,dayOfYear):
-        """ betaB as function of the year """
-        x = (dayOfYear-105)/10   # transformed Julian calender day
+        """ betaB as function of the year
+            bB was adapted to the gamma distribution to make it easier to
+            apdat it to new data
+        """
+        x = (dayOfYear-80)/5.5   # transformed Julian calender day
         if(x<=0):
             return 0.0
-        a = 1.52         # 
-        b = 1.93
-        return 0.125 *(x/b)**(a-1)*np.exp(-x/b)/(b*gamma(a))
+        alpha = 8.157894736842106
+        rv = gamma(alpha)
+        return 0.025*rv.pdf(x)
     
     def betaB(self,T):
         """ transmission rate"""
