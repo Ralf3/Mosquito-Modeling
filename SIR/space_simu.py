@@ -14,6 +14,10 @@ Created on Mon Jul  9 09:32:29 2018
     and import the number of living mosquitos, the number of larves, the number
     of infected mosquitoes.
 """
+
+import sys
+sys.path.append('/datadisk/samt2/src')
+import grid as samt
 import numpy as np
 import matplotlib.pylab as plt
 from scipy.signal import convolve2d

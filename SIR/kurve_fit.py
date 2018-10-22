@@ -28,6 +28,7 @@ for i in range(gammaP.size):
 plt.plot(x,gammaP) 
 plt.plot(x,gammaC) 
 plt.grid()  
+plt.show()
 
 for i in np.linspace(5,10,20):
     print(i, ' : ',gamma.ppf(0.001,i),gamma.ppf(0.5,i),gamma.ppf(0.99,i))
@@ -48,3 +49,4 @@ for t in T:
 
 plt.plot(T,D) 
 plt.grid()
+plt.show()
