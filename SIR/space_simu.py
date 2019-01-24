@@ -228,13 +228,13 @@ class mosquitoes:
     def get_matrixm(self):
         matrix=np.zeros(self.R.get_shape())  # reset the mosquito matrix
         for m in self.m:      # fill it with the mosquitoes
-            matrix[m.i,m.j]+=1
+            matrix[m.i,m.j]+=1.0
         return matrix
     
     def get_matrixi(self):
         matrix=np.zeros(self.R.get_shape())  # reset the mosquito matrix
         for m in self.infected:      # fill it with the mosquitoes
-            matrix[m.i,m.j]+=1
+            matrix[m.i,m.j]+=1.0
         return matrix
        
         

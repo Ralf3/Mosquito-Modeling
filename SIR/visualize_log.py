@@ -39,11 +39,14 @@ plt.show()
 m=np.load(path+'/Mosquito-Modeling/SIR/results/matrixm.npy')
 inf=np.load(path+'/Mosquito-Modeling/SIR/results/matrixi.npy')
 
+plt.figure(figsize=(12,12))
 plt.imshow(m)
 plt.colorbar()
 plt.title('Mosquito distribution')
 plt.show()
 
+
+plt.figure(figsize=(12,12))
 plt.imshow(inf)
 plt.colorbar()
 plt.title('Infected distribution')

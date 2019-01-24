@@ -7,6 +7,8 @@ Created on Mon Jul  9 14:55:40 2018
 """
 
 import pandas as pd
+from datetime import date, timedelta
+import pylab as plt
 
 ''' read the files from the German weather service 
     that are the most close to the research areas  R0, R1 and R2; '''
@@ -18,17 +20,20 @@ path = '/datadisk/Mosquito-Modeling/SIR/data/'
 #R2=space_simu.region(landscape[2900:3150,2200:2450]) # R2: no spread region
 r0 = pd.read_csv(path+'produkt_tu_stunde_19730101_20171231_05009.txt',
                  delimiter = ';',
-                 delim_whitespace=False
+                 delim_whitespace=False,
+                 na_values= -999
                  )
 
 r1 = pd.read_csv(path+'produkt_tu_stunde_20040901_20171231_03490.txt', 
                  delimiter= ';',
-                 delim_whitespace=False
+                 delim_whitespace=False,
+                 na_values= -999
                  )
 
 r2 = pd.read_csv(path+'produkt_tu_stunde_20040701_20171231_00294.txt', 
                  delimiter=';',
-                 delim_whitespace=False
+                 delim_whitespace=False,
+                 na_values= -999
                  )
 
 class Weather():
@@ -41,30 +46,29 @@ class Weather():
         """
         self.date=datum
         self.region=region
-        self.index=self.region[(self.region.MESS_DATUM.astype('str')).str.startswith(self.date)].index[0]
-        
+                
     def next(self):
-        res=self.region.iloc[self.index:self.index+24]
-        s=0
-        k=0
-        for x in res['TT_TU']:
-            if(x==-999):
-                continue
-            s+=x
-            k+=1
-        self.index+=24
-        if k!=0:
-            return s/k
-        return -999
-    
-import pylab as plt
-w=Weather(r1,'20120101')
+       """ uses the date start for one day selection """
+       start_time="%04d%02d%02d00" % (self.date.year,self.date.month,self.date.day)
+       start_time=int(start_time)
+       self.date=self.date+timedelta(1)
+       end_time="%04d%02d%02d00" % (self.date.year,self.date.month,self.date.day)
+       end_time=int(end_time)
+       mask=(self.region['MESS_DATUM']>=start_time) &\
+             (self.region['MESS_DATUM']<end_time) &\
+             (pd.notna(self.region['TT_TU']))
+       return self.region[mask]['TT_TU'].mean()
+
+w=Weather(r0,date(2011,1,1))
 TX=[]
-for i in range(365*5):
+for i in range(365*6):
     TX.append(w.next())
-plt.plot(TX[0:365])
+    # print(i,TX[i])
+print(len(TX))
+plt.plot(TX[5*365:6*365])
 plt.grid()
 plt.xlabel('t [d]')
 plt.ylabel('T [grd]')
-plt.title('Mean temperature from 2010')
+plt.title('Mean temperature')
 plt.show()
+

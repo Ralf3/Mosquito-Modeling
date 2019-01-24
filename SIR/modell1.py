@@ -16,6 +16,7 @@ import time_simu
 from osgeo import gdal
 import numpy as np
 import Read_Temperature as RT
+from datetime import date, timedelta
 
 # load the space after 
 # read a ascii_file using gdal
@@ -69,7 +70,7 @@ class SIMU():
             self.sir.KM=100*np.mean(self.space.R.R)
         self.factor=0.01   # 100/0.01 = 100000     
         self.log_file=open(path+'/Mosquito-Modeling/SIR/results/log.csv','w')
-        s="t mosquitoes m infected SM IM\n"
+        s="t mosquitoes m infected\n"
         self.log_file.write(s)
         self.highestm=1    # start with an asumption 
         self.highesti=1    # start with an asumption 
@@ -122,12 +123,13 @@ class SIMU():
         np.save(path+'/Mosquito-Modeling/SIR/results/matrixm.npy',self.m)
         np.save(path+'/Mosquito-Modeling/SIR/results/matrixi.npy',self.inf)
         
-        
+              
 
 """ simulation part """
 M=space_simu.mosquitoes(R1)
-simu=SIMU(52.0,M)  
-rt=RT.Weather(RT.r1,'20100101')
+simu=SIMU(52.0,M) 
+rt=RT.Weather(RT.r1,date(2011,1,1))
+# rt=RT.Weather(RT.r1,'20100101')
 tx=np.arange(5*365)
 """ iterate over one year """
 T0=rt.next()

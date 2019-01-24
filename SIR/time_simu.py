@@ -174,12 +174,81 @@ class SIR:
         self.SM += -self.deltaM(dayOfYear)*self.betaB(T)*SM*IB/self.KB+self.bM(T)*LM-self.mM(T)*SM
         self.EM += self.deltaM(dayOfYear)*self.betaB(T)*SM*IB/self.KB-self.gammaM(T)*EM-self.mM(T)*EM
         self.IM += self.gammaM(T)*EM-self.mM(T)*IM
+        #print(self.LM,self.SM,self.EM,self.IM)
         # check of valid 
         if self.SM<0 :
-            self.SM=0    
+            self.SM=0.01
+        NM = self.SM+self.EM+self.IM+self.LM
         if NM<self.NMmin : 
             self.SM = SM 
             self.EM = EM
             self.IM1 =IM
             
-        
+import pylab as plt       
+def show_tests():
+    lat=52.0
+    sir=SIR(lat)
+    """ biting_rate """
+    T=np.linspace(-5.0,45.0,100)
+    biting_rate=sir.biting_rate(T)
+    plt.plot(T,biting_rate)
+    plt.grid()
+    plt.xlabel('Temperature (°C)')
+    plt.ylabel('biting rate (1/day)')
+    plt.title('Biting rate against Temperature')
+    plt.show()
+    """ Mosquito fecundity """
+    """ gammaM """
+    gammaM=[]
+    for TX in T:
+        gammaM.append(sir.gammaM(TX))
+    plt.plot(T,gammaM)
+    plt.grid()
+    plt.xlabel('Temperature (°C)')
+    plt.ylabel('gammaM')
+    plt.title('rate infected-infectious, T: temp in grd C')
+    plt.show()
+    """ ML """
+    mL=[]
+    for TX in T:
+        mL.append(sir.mL(TX))
+    plt.plot(T,mL)
+    plt.grid()
+    plt.xlabel('Temperature (°C)')
+    plt.ylabel('Larval mortality, mL (1/d)')
+    plt.title('mortality of the larve T: temperature in grd C')
+    plt.show()
+    """ deltaM """
+    t=np.linspace(1,365,365)  # days
+    deltaM=[]
+    for tx in t:
+        deltaM.append(sir.deltaM(tx))
+    plt.plot(t,deltaM)
+    plt.grid()
+    plt.xlabel('time in days')
+    plt.ylabel('deltaM')
+    plt.title('fraction of active, not diapausing mosquitoes')
+    plt.show()
+    bB=[]
+    for tx in t:
+        bB.append(sir.bB(tx))
+    plt.plot(t,bB)
+    plt.grid()
+    plt.xlabel('time in days')
+    plt.ylabel('dB')
+    plt.title('transmission rate (beta) as function of the year')
+    plt.show()
+    """ daylength """
+    daylength=[]
+    for tx in t:
+        daylength.append(sir.daylength(tx))
+    plt.plot(t,daylength)
+    plt.grid()
+    plt.xlabel('time in days')
+    plt.ylabel('daylength')
+    plt.title('daylength as function of the year')
+    plt.show()
+    return True
+
+
+show_tests()                                             
