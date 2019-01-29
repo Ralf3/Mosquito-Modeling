@@ -54,7 +54,7 @@ class mosquito:
     """
     the class mosquito determmines the behavior of one mosquito
     """
-    def __init__(self,i1,j1,width1,id, R,energy=100.0,age=0,infect=False):
+    def __init__(self, i1, j1, width1, id, R, energy=100.0, age=0, infect=False):
         self.i=i1          # row of the location in R
         self.j=j1          # column of the location in R
         self.width=width1  # maximum width of jumping 
@@ -93,6 +93,7 @@ class mosquitoes:
         self.energy=np.zeros(self.R.get_shape()) # stores the energy level 
         self.d8_data=np.array([[1,1,1],[1,0,1],[1,1,1]]) # to store the d8 region
         self.distribution = None
+        self.migrate=[]  # counts the number of mosquitoes which leave the region
         
     def add(self,mx):
         self.m.append(mx)  # add a single mosquito
@@ -148,7 +149,6 @@ class mosquitoes:
         hight //= 5
         wide //= 5
         self.distribution=np.zeros((hight, wide))  # result map
-        
         sumOfhist2D=np.sum(self.hist2D)
         for k in range(nr):
             self.set_one_mosquito(sumOfhist2D,infect)
@@ -157,14 +157,17 @@ class mosquitoes:
     def step(self):
         self.steps+=1      # step one day for all stored mosquitoes
         L=[]
+        migrate=0
         self.matrix[:,:]=0.0  # reset the mosquito matrix
         for m in self.m:      # fill it with the mosquitoes
             self.matrix[m.i,m.j]+=1
         for m in self.m:
             # test if jump is useful
             if(self.R.get(m.i,m.j)<0.95 or self.d8(m.i,m.j)>80):
-                # print(self.R.get(m.i,m.j),self.d8(m.i,m.j))
-                if(not(m.jump()==False or m.energy<5)):
+                jump_tag=m.jump()
+                if(jump_tag==False):
+                    migrate+=1
+                if(not(jump_tag==False or m.energy<5)):
                     L.append(m) # only if the jump was valid the mosquito survives
                 else:
                     try:
@@ -175,6 +178,7 @@ class mosquitoes:
                 L.append(m)
             #    print(self.steps, m.energy, m.age)
         self.m=L
+        self.migrate.append(migrate)
         # print(self.steps,len(self.m))
         
     def kill(self,n):

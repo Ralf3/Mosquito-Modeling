@@ -27,7 +27,7 @@ plt.title('Infected over 4 years')
 plt.show()
 
 # visualize the total mosquitoes
-total=log.m.values
+total=log.mosquitoes.values
 plt.plot(total)
 plt.ylabel('nr')
 plt.xlabel('day')

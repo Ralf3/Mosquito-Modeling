@@ -26,17 +26,25 @@ class SIR:
         self.lat = lat    # latitdude of the region
 
         """ the bird part of parameters """
-        self.mB = 0.0012     # mortality rate of bird
-        self.alphaB = 0.182  # recovery rate of bird
-        self.gammaB = 0.667  # incubition rate of bird
-        self.nuB = 0.3       # portion of dead bird
-        
+        # for Usustu-virus
+#        self.mB = 0.0012     # mortality rate of bird
+#        self.alphaB = 0.182  # recovery rate of bird
+#        self.gammaB = 0.667  # incubition rate of bird
+#        self.nuB = 0.3       # portion of dead bird
+        #for West-Nile-virus
+        self.mB = 0.00034     # mortality rate of bird
+        self.alphaB =0.4      # recovery rate of bird
+        self.gammaB = 1.0     # incubition rate of bird
+        self.nuB = 0.2        # portion of dead bird
+
         """ mosquito part of parameter 
             this should be paramters for the modelling interface """
         self.KM = 100.0   # carrying capccity of mosquitoes
-        self.NMmin = 1.0 # minimum number of mosquitoes
+        self.scale = 20   # scale factor between KM and real word of deseases
+        self.NMmin = 1.0  # minimum number of mosquitoes
+        # self.mE  = 0.02  # mortality of an egg
         """ bird parameter """
-        self.KB = 1.0   # carrying capacity of the bird
+        self.KB = 5.0   # carrying capacity of the bird
         """ transfer from bird to mosquito and vise versa """
         self.pM = 1.0        # prob. transmition of des. from mosquito to the bird
         self.pB = 0.125      # prop. from bird to mosquito
@@ -53,7 +61,7 @@ class SIR:
     
     def bM(self,T):
         """ birth rate of mosquito """
-        return self.bL(T)/10
+        return self.bL(T)*0.1
     
     def mL(self,T):
         """ mortality of the larve T: temperature in grd C """
@@ -101,6 +109,7 @@ class SIR:
     
     def deltaM(self,dayOfYear):
         """ fraction of active mosquitoes diapausing mosquitoes """
+        # return 1.0-1.0/(1.0+1775.7*np.exp(1.559*(self.daylength(dayOfYear)-18.177)))
         return 1.0-1.0/(1.0+1775.7*np.exp(1.559*(self.daylength(dayOfYear)-18.177)))
     
     def gammaM(self,T):
@@ -119,19 +128,37 @@ class SIR:
         x = (dayOfYear-80)/5.5   # transformed Julian calender day
         if(x<=0):
             return 0.0
-        alpha = 8.157894736842106
+        # alpha = 8.157894736842106
+        alpha = 16.0
         rv = gamma(alpha)
-        return 0.025*rv.pdf(x)
+        # return 0.025*rv.pdf(x)
+        return 0.065*rv.pdf(x)
     
     def betaB(self,T):
         """ transmission rate"""
         return self.biting_rate(T)*self.pB
-        
+    
+    def eggs(self,T):
+        """ describes the number of eggs laid per clutch
+            this was normalized to a rate for self.EG
+        """
+        max_eggs=214.61702127659566
+        if(T<10.0):
+            return 0.0
+        elif(T>=28.5):
+            return 16.76542553191486/max_eggs
+        return (-0.00245*T**2 + 0.04406*T + 0.81310) / 0.0047 / max_eggs
+     
+    def mE(self,T):
+        """mortality rate of mosquito eggs (per 4 day)"""
+        return (0.9*(1-( 1 / (1 + np.exp(-0.26157921*(T-0.46877381)))))+0.1) / 5.0
+    
     """ simulation part """
     
-    def set_init_conditions(self,sm=1.0,lm=1.0,im=0.01,sb=0.5,ib=0.01):
+    def set_init_conditions(self,sm=1.0,lm=1.0,im=0.01,sb=0.5,ib=0.05):
         """ init the simulation by setting the starting parameters """
         self.SM = sm     # start mosquitoes
+        self.EG = 0.1    # eggs 
         self.LM = lm     # larve 
         self.EM = 0.0    # expected mosquitos
         self.IM = im     # infected mosquitos
@@ -150,6 +177,7 @@ class SIR:
         EM = self.EM
         IM = self.IM
         LM = self.LM
+        EG = self.EG
         # birds
         SB = self.SB
         EB = self.EB
@@ -163,18 +191,19 @@ class SIR:
         bB = self.bB(dayOfYear)
         NB = SB+EB+IB+RB # +self.DB
         self.SB += (bB-(bB-self.mB)*NB/self.KB)*NB-self.deltaM(dayOfYear)*self.betaM(T)*IM*SB/self.KB-self.mB*SB
-        self.EB += self.deltaM(dayOfYear)*self.betaM(T)*IM*SB/self.KB-self.gammaB*EB-self.mB*EB
-        self.IB += self.gammaB*EB-self.alphaB*IB-self.mB*IB
-        self.RB += (1-self.nuB)*self.alphaB*IB-self.mB*RB
-        self.DB += self.nuB*self.alphaB*IB # +self.mB*(self.SB+self.EB+self.IB+self.RB)
+        self.EB += self.deltaM(dayOfYear)*self.betaM(T)*IM*self.SB/self.KB-self.gammaB*EB-self.mB*EB
+        self.IB += self.gammaB*self.EB-self.alphaB*IB-self.mB*IB
+        self.RB += (1-self.nuB)*self.alphaB*self.IB-self.mB*RB
+        self.DB += self.nuB*self.alphaB*self.IB # +self.mB*(self.SB+self.EB+self.IB+self.RB)
         # print(self.SB,self.EB,self.IB,self.RB,self.DB)
         # mosquito pop
         NM = SM+EM+IM+LM # sum of all mosquitoes in all states
+        # self.EG += self.eggs(T)*self.deltaM(dayOfYear)*NM*(1-EG/self.KM)-self.mE(T)*self.EG-(self.bL(T)*self.deltaM(dayOfYear)*self.EG)
         self.LM += (self.bL(T)*self.deltaM(dayOfYear)*NM-self.mL(T)*LM)*(1-LM/self.KM)-self.bM(T)*LM
-        self.SM += -self.deltaM(dayOfYear)*self.betaB(T)*SM*IB/self.KB+self.bM(T)*LM-self.mM(T)*SM
-        self.EM += self.deltaM(dayOfYear)*self.betaB(T)*SM*IB/self.KB-self.gammaM(T)*EM-self.mM(T)*EM
-        self.IM += self.gammaM(T)*EM-self.mM(T)*IM
-        #print(self.LM,self.SM,self.EM,self.IM)
+        self.SM += self.bM(T)*self.LM-self.scale*self.deltaM(dayOfYear)*self.betaB(T)*SM*IB/self.KB-self.mM(T)*SM
+        self.EM += self.scale*self.deltaM(dayOfYear)*self.betaB(T)*self.SM*IB/self.KB-self.scale*self.gammaM(T)*EM-self.mM(T)*EM
+        self.IM += self.scale*self.gammaM(T)*self.EM-self.mM(T)*IM
+        print(self.LM,self.SM,self.EM,self.IM)
         # check of valid 
         if self.SM<0 :
             self.SM=0.01
@@ -248,6 +277,25 @@ def show_tests():
     plt.ylabel('daylength')
     plt.title('daylength as function of the year')
     plt.show()
+#    eggs1=[]
+#    for TX in T:
+#        eggs1.append(sir.eggs(TX))
+#    plt.plot(T,eggs1)
+#    plt.grid()
+#    plt.xlabel('Temperature (°C)')
+#    plt.ylabel('Mean number of eggs per female')
+#    plt.title('Fecundity')
+#    plt.show()
+#    eggs2=[]  
+#    for TX in T:
+#        eggs2.append(sir.mE(TX))
+#    plt.plot(T,eggs2)
+#    plt.grid()
+#    plt.xlabel('Temperature (°C)')
+#    plt.ylabel('Mortality rate of eggs')
+#    plt.title('Mortality')
+#    plt.show()
+ 
     return True
 
 

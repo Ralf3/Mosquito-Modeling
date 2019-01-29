@@ -63,25 +63,30 @@ class SIMU():
     def __init__(self,lat,M):
         self.sir=time_simu.SIR(lat)   # start at a latitude
         self.space=M
-        self.sir.set_init_conditions(sm=0.5,lm=0.5,sb=0.2)
+        self.sir.set_init_conditions(sm=0.50, lm=0.5, sb=0.5)
         if(np.mean(self.space.R.R)>0.6):
             self.sir.KM=100.0  # set the carrying capacity
         else:
             self.sir.KM=100*np.mean(self.space.R.R)
         self.factor=0.01   # 100/0.01 = 100000     
         self.log_file=open(path+'/Mosquito-Modeling/SIR/results/log.csv','w')
-        s="t mosquitoes m infected\n"
+        s="t mosquitoes infected\n"
         self.log_file.write(s)
         self.highestm=1    # start with an asumption 
         self.highesti=1    # start with an asumption 
         self.m=None
         self.inf=None
-    def time_step(self,tx,yd):
+    def time_step(self,t,tx,yd):
         """ run one step using the temperatur tx and the yearday yd as inputs """
         #sir.SM=(len(self.space.m)-len(self.space.infected))*self.factor
         #sir.IM=len(self.space.infected)*self.factor
         self.sir.step(tx,yd) # T is interpolated and the day is the yearday
-        # print(yd,':',self.sir.SM,self.sir.LM,self.sir.EM,self.sir.IM)
+        #  # s="%d %d %d %d %f %f\n" % (t,mosquitoes,len(self.space.m),len(self.space.infected),self.sir.SM,self.sir.IM)
+        s="%d %d %d\n" % (t,(self.sir.SM+self.sir.EM+self.sir.IM)/self.factor,self.sir.IM/self.factor)
+        print(s)
+        # save the log
+        self.log_file.write(s)
+        
     def space_step(self,t):
         mosquitoes=self.sir.SM+self.sir.EM+self.sir.IM
         if(mosquitoes>self.sir.NMmin):
@@ -113,12 +118,7 @@ class SIMU():
                     print('**************************************************',self.highesti)
             if(len(self.space.infected) > 1):
                 self.sir.IM=len(self.space.infected)*self.factor
-        # s="%d %d %d %d %f %f\n" % (t,mosquitoes,len(self.space.m),len(self.space.infected),self.sir.SM,self.sir.IM)
-        s="%d %d %d %d\n" % (t,mosquitoes,len(self.space.m),len(self.space.infected))
-        print(s)
-        # save the log
-        self.log_file.write(s)
-        
+            # print(t,':',self.sir.SM,self.sir.LM,self.sir.EM,self.sir.IM)
     def save_matrix(self):
         np.save(path+'/Mosquito-Modeling/SIR/results/matrixm.npy',self.m)
         np.save(path+'/Mosquito-Modeling/SIR/results/matrixi.npy',self.inf)
@@ -126,7 +126,7 @@ class SIMU():
               
 
 """ simulation part """
-M=space_simu.mosquitoes(R1)
+M=space_simu.mosquitoes(R0n)
 simu=SIMU(52.0,M) 
 rt=RT.Weather(RT.r1,date(2011,1,1))
 # rt=RT.Weather(RT.r1,'20100101')
@@ -138,7 +138,8 @@ for t in tx:
         simu.sir.IB+=0.1
     T=(rt.next())*0.1+T0*0.9  # filter it
     T0=T
-    simu.time_step(T,t%365)
+    simu.time_step(t,T,t%365)
     simu.space_step(t)
 
 simu.save_matrix()
+simu.log_file.close()
