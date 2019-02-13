@@ -35,47 +35,71 @@ class SIR:
         self.mB = 0.00034     # mortality rate of bird
         self.alphaB =0.4      # recovery rate of bird
         self.gammaB = 1.0     # incubition rate of bird
-        self.nuB = 0.2        # portion of dead bird
+        self.nuB = 0.7        # portion of dead bird
+        # self.nuB = 0.2        # test number from Ralf
 
         """ mosquito part of parameter 
             this should be paramters for the modelling interface """
-        self.KM = 100.0   # carrying capccity of mosquitoes
-        self.scale = 20   # scale factor between KM and real word of deseases
-        self.NMmin = 1.0  # minimum number of mosquitoes
+        self.KM = 300000  #7500#30.0#100.0   # carrying capccity of mosquitoes
+                          # from Rubel estimated as 3,300,000 for Cx.pipiens comple
+        self.scale = 1    # scale factor between KM and real word of deseases (new!)
+        self.NMmin = 100.0  # minimum number of mosquitoes
         # self.mE  = 0.02  # mortality of an egg
-        """ bird parameter """
-        self.KB = 5.0   # carrying capacity of the bird
-        """ transfer from bird to mosquito and vise versa """
-        self.pM = 1.0        # prob. transmition of des. from mosquito to the bird
-        self.pB = 0.125      # prop. from bird to mosquito
         
+        """ bird parameter """
+        self.KB = 10000 # carrying capacity of the bird
+                        # originally calculated as total number
+                        # of birds in a disease free population, 
+                        # 110,000 for American crow
+                        
+        """ transfer from bird to mosquito and vise versa """
+        #self.pM = 1.0   # probable transmition of des. from mosquito to the bird
+        #self.pM = 1.2   # assumption from RALF
+        self.pM = 1.0    # transmition rate from infectious mosquito to the bird
+        #self.pB = 0.125  # transmission rate from bird to mosquito
+        #self.pB = 0.2  # assumption from RALF
+        self.pB = 0.5
     """ mosquito part of parameter """
     
     def biting_rate(self,T):
-        """ T: temperature in grd C """
-        return 0.344/(1+1.231*np.exp(-0.184*(T-20)))
+        """ dieser Parameter ist nur noch für die Infektionen wichtig 
+        (nicht wegen jedem Stich werden Eier abgelegt)
+        T: temperature in grd C 
+        """
+        return 0.344/(1+1.231*np.exp(-0.184*(T-12))) # it should be much lower for Aedes japonicus 
+                                                     # regarding to BIRD-BITES!; its 
+                                                     # gonotrophic cycle, which this equation describes,
+                                                     # however, should not be so different 
+    def proportion_bited_birds(self,T):
+        return (0.344/(1+1.231*np.exp(-0.184*(T-12))))
+        
     
     def bL(self,T):
         """ birth rate of larve T: temperature in grd C """
-        return 2.325 * self.biting_rate(T)
-    
+        return 2.325 * self.biting_rate(T)  # it should be much more complicated! Die Anzahl
+                                            # der Nachkommen/Weibchen ist temperaturabhängig: umso kälter,
+                                            # desto größer das Weibchen und umso mehr Nachkommen; 
+                                            # auch die Entwicklungszeit (Temp-abhängig) ist wichtig!
     def bM(self,T):
         """ birth rate of mosquito """
-        return self.bL(T)*0.1
+        return self.bL(T)*0.1 #aus dem Rubel-Modell
     
     def mL(self,T):
         """ mortality of the larve T: temperature in grd C """
-        return 0.0025*T**2-0.094*T+1.0257
+        return 0.0025*T**2-0.094*T+1.0257         # from Rubels Usutu model/ West Nil model
+        # return 0.3018*T**2-10.9962*T+116.1783   # after Reuss et al, 2018
+        # return 0.0024*T**2-0.09*T+1.0257        # new assumption
     
     def mM(self,T):
         """ mortality rate of the mosquito T: temperature in grd C """
         
-        return 0.1*self.mL(T)
+        return 0.1*self.mL(T) #aendern!!!???
     
     def betaM(self,T):
         """ transmission rate """
-        return self.biting_rate(T)*self.pM
- 
+        #return self.biting_rate(T)*self.pM
+        return self.proportion_bited_birds(T)*self.pM
+    
     def daylength(self, dayOfYear):
         """
         Computes the length of the day the time between sunrise and
@@ -108,20 +132,23 @@ class SIR:
         return 2.0*hourAngle/15.0
     
     def deltaM(self,dayOfYear):
-        """ fraction of active mosquitoes diapausing mosquitoes """
-        # return 1.0-1.0/(1.0+1775.7*np.exp(1.559*(self.daylength(dayOfYear)-18.177)))
-        return 1.0-1.0/(1.0+1775.7*np.exp(1.559*(self.daylength(dayOfYear)-18.177)))
+        """ fraction of active, not diapausing mosquitoes """
+        #return 1.0-1.0/(1.0+10775.7*np.exp(1.559*(self.daylength(dayOfYear)-18.177))) #Kurve verbreitert
+        return 1.0-1.0/(1.0+1775.7*np.exp(1.559*(self.daylength(dayOfYear)-18.177))) #Rubel
     
     def gammaM(self,T):
         """ rate infected-infectious, T: temp in grd C"""
-        if(T<=15):
+        if(T<=10):
             return 0.0
-        return 0.0093*T-0.1352
+        # return 0.0093*T-0.1352
+        return 0.0093*T-0.093
+    
+    
     
     """ the bird part of parameters """
     
     def bB(self,dayOfYear):
-        """ betaB as function of the year
+        """ Bird birth (bB) as function of the year
             bB was adapted to the gamma distribution to make it easier to
             apdat it to new data
         """
@@ -136,29 +163,15 @@ class SIR:
     
     def betaB(self,T):
         """ transmission rate"""
-        return self.biting_rate(T)*self.pB
+        #return self.biting_rate(T)*self.pB
+        return self.proportion_bited_birds(T)*self.pB
     
-    def eggs(self,T):
-        """ describes the number of eggs laid per clutch
-            this was normalized to a rate for self.EG
-        """
-        max_eggs=214.61702127659566
-        if(T<10.0):
-            return 0.0
-        elif(T>=28.5):
-            return 16.76542553191486/max_eggs
-        return (-0.00245*T**2 + 0.04406*T + 0.81310) / 0.0047 / max_eggs
-     
-    def mE(self,T):
-        """mortality rate of mosquito eggs (per 4 day)"""
-        return (0.9*(1-( 1 / (1 + np.exp(-0.26157921*(T-0.46877381)))))+0.1) / 5.0
-    
+
     """ simulation part """
     
-    def set_init_conditions(self,sm=1.0,lm=1.0,im=0.01,sb=0.5,ib=0.05):
+    def set_init_conditions(self,lm=10000.0,sm=25000.0,im=0.0,sb=9500.0,ib=0.0):
         """ init the simulation by setting the starting parameters """
         self.SM = sm     # start mosquitoes
-        self.EG = 0.1    # eggs 
         self.LM = lm     # larve 
         self.EM = 0.0    # expected mosquitos
         self.IM = im     # infected mosquitos
@@ -168,6 +181,16 @@ class SIR:
         self.RB = 0.0    # recovered bird
         self.DB = 0.0    # dead bird
         self.model=[self.LM,self.SM,self.EM,self.IM,self.SB,self.EB,self.IB,self.RB,self.DB]
+
+    def lambdaMB(self,T, dayOfYear):
+        """ transfer mosquitoes to birds """
+        return self.deltaM(dayOfYear) * self.betaM(T) * self.pM * self.KM/self.KB * self.IM/self.KM # 
+        #return self.deltaM(dayOfYear) * self.betaM(T) * 30 * self.IM/self.KM
+
+    def lambdaBM(self,T, dayOfYear):
+        """ transfer birds to mosquitoes """
+        return self.deltaM(dayOfYear) * self.betaB(T) * self.IB/self.KB
+
         
     def  step(self,T,dayOfYear):
         """ one time step with a simple euler method dh=1
@@ -177,7 +200,7 @@ class SIR:
         EM = self.EM
         IM = self.IM
         LM = self.LM
-        EG = self.EG
+        #EG = self.EG
         # birds
         SB = self.SB
         EB = self.EB
@@ -187,36 +210,39 @@ class SIR:
         
         #lambdaB = self.deltaM(dayOfYear)*self.pB*self.IB/self.KB # transfer mosquito to bird
         #lambdaM = self.deltaM(dayOfYear)*self.pM*self.IM/self.KM # 
-        # Bird Population Loop
+        
+        """Bird Population Loop"""
         bB = self.bB(dayOfYear)
-        NB = SB+EB+IB+RB # +self.DB
-        self.SB += (bB-(bB-self.mB)*NB/self.KB)*NB-self.deltaM(dayOfYear)*self.betaM(T)*IM*SB/self.KB-self.mB*SB
-        self.EB += self.deltaM(dayOfYear)*self.betaM(T)*IM*self.SB/self.KB-self.gammaB*EB-self.mB*EB
-        self.IB += self.gammaB*self.EB-self.alphaB*IB-self.mB*IB
-        self.RB += (1-self.nuB)*self.alphaB*self.IB-self.mB*RB
-        self.DB += self.nuB*self.alphaB*self.IB # +self.mB*(self.SB+self.EB+self.IB+self.RB)
-        # print(self.SB,self.EB,self.IB,self.RB,self.DB)
-        # mosquito pop
-        NM = SM+EM+IM+LM # sum of all mosquitoes in all states
-        # self.EG += self.eggs(T)*self.deltaM(dayOfYear)*NM*(1-EG/self.KM)-self.mE(T)*self.EG-(self.bL(T)*self.deltaM(dayOfYear)*self.EG)
-        self.LM += (self.bL(T)*self.deltaM(dayOfYear)*NM-self.mL(T)*LM)*(1-LM/self.KM)-self.bM(T)*LM
-        self.SM += self.bM(T)*self.LM-self.scale*self.deltaM(dayOfYear)*self.betaB(T)*SM*IB/self.KB-self.mM(T)*SM
-        self.EM += self.scale*self.deltaM(dayOfYear)*self.betaB(T)*self.SM*IB/self.KB-self.scale*self.gammaM(T)*EM-self.mM(T)*EM
-        self.IM += self.scale*self.gammaM(T)*self.EM-self.mM(T)*IM
+        NB = SB+EB+IB+RB 
+        self.SB += (bB-(bB-self.mB)*NB/self.KB) * NB- self.lambdaMB(T,dayOfYear) * SB -self.mB*SB
+        self.EB += self.lambdaMB(T,dayOfYear)*SB - self.gammaB*EB - self.mB*EB
+        self.IB += self.gammaB*EB - self.alphaB*IB - self.mB*IB #ok
+        self.RB += (1-self.nuB)*self.alphaB*IB-self.mB*RB #ok
+        self.DB += self.nuB*self.alphaB*self.IB 
+        print(self.SB,self.EB,self.IB,self.RB,self.DB)
+         
+        """mosquito pop"""
+        NM = SM+EM+IM # sum of all mosquitoes in all states
+        self.LM += (self.bL(T)*self.deltaM(dayOfYear)*NM -self.mL(T)*LM)*(1-LM/self.KM) - self.bM(T)*self.LM
+        self.SM += -self.lambdaBM(T,dayOfYear) * SM + self.bM(T) *self.LM -self.mM(T) * SM
+        self.EM += self.lambdaBM(T,dayOfYear)*SM - self.gammaM(T)*EM - self.mM(T) *EM
+        self.IM += self.gammaM(T) * self.EM - self.mM(T) * IM 
         print(self.LM,self.SM,self.EM,self.IM)
+        
         # check of valid 
         if self.SM<0 :
-            self.SM=0.01
+            self.SM=100
         NM = self.SM+self.EM+self.IM+self.LM
         if NM<self.NMmin : 
             self.SM = SM 
             self.EM = EM
-            self.IM1 =IM
+            self.IM = IM
             
 import pylab as plt       
 def show_tests():
     lat=52.0
     sir=SIR(lat)
+    
     """ biting_rate """
     T=np.linspace(-5.0,45.0,100)
     biting_rate=sir.biting_rate(T)
@@ -226,7 +252,19 @@ def show_tests():
     plt.ylabel('biting rate (1/day)')
     plt.title('Biting rate against Temperature')
     plt.show()
+    
+    """bited birds"""
+    proportion_bited_birds=sir.proportion_bited_birds(T)
+    plt.plot(T,proportion_bited_birds)
+    plt.grid()
+    plt.xlabel('Temperature (°C)')
+    plt.ylabel('bird biting rate (1/day)')
+    plt.title('Specific bird biting rate against Temperature')
+    plt.show()
+    
     """ Mosquito fecundity """
+    ###entfernt
+    
     """ gammaM """
     gammaM=[]
     for TX in T:
@@ -237,6 +275,7 @@ def show_tests():
     plt.ylabel('gammaM')
     plt.title('rate infected-infectious, T: temp in grd C')
     plt.show()
+    
     """ ML """
     mL=[]
     for TX in T:
@@ -247,6 +286,7 @@ def show_tests():
     plt.ylabel('Larval mortality, mL (1/d)')
     plt.title('mortality of the larve T: temperature in grd C')
     plt.show()
+    
     """ deltaM """
     t=np.linspace(1,365,365)  # days
     deltaM=[]
@@ -258,15 +298,29 @@ def show_tests():
     plt.ylabel('deltaM')
     plt.title('fraction of active, not diapausing mosquitoes')
     plt.show()
+    
+    """ transmission rate (betaB) von Vogel zu Mücke """
+    T=np.linspace(-5.0,45.0,100)
+    betaB=sir.betaB(T)
+    plt.plot(T,betaB)
+    plt.grid()
+    plt.xlabel('Temperature (°C)')
+    plt.ylabel('betaB (1/day)')
+    plt.title('transmission rate (betaB: Vogel zu Mücke)\nagainst temperature')
+    plt.show()
+    
+    """ Birth birds """
+    t=np.linspace(1,365,365)  # days
     bB=[]
     for tx in t:
         bB.append(sir.bB(tx))
     plt.plot(t,bB)
     plt.grid()
     plt.xlabel('time in days')
-    plt.ylabel('dB')
-    plt.title('transmission rate (beta) as function of the year')
+    plt.ylabel('bB')
+    plt.title('Bird birth rate')
     plt.show()
+    
     """ daylength """
     daylength=[]
     for tx in t:
@@ -277,26 +331,9 @@ def show_tests():
     plt.ylabel('daylength')
     plt.title('daylength as function of the year')
     plt.show()
-#    eggs1=[]
-#    for TX in T:
-#        eggs1.append(sir.eggs(TX))
-#    plt.plot(T,eggs1)
-#    plt.grid()
-#    plt.xlabel('Temperature (°C)')
-#    plt.ylabel('Mean number of eggs per female')
-#    plt.title('Fecundity')
-#    plt.show()
-#    eggs2=[]  
-#    for TX in T:
-#        eggs2.append(sir.mE(TX))
-#    plt.plot(T,eggs2)
-#    plt.grid()
-#    plt.xlabel('Temperature (°C)')
-#    plt.ylabel('Mortality rate of eggs')
-#    plt.title('Mortality')
-#    plt.show()
- 
-    return True
+    return sir
 
-
-show_tests()                                             
+"""
+sir=show_tests()                                             
+sir.set_init_conditions(sm=10000,lm=50000,sb=9800,ib=0)
+"""

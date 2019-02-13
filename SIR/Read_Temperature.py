@@ -59,6 +59,7 @@ class Weather():
              (pd.notna(self.region['TT_TU']))
        return self.region[mask]['TT_TU'].mean()
 
+"""
 w=Weather(r0,date(2011,1,1))
 TX=[]
 for i in range(365*6):
@@ -71,4 +72,5 @@ plt.xlabel('t [d]')
 plt.ylabel('T [grd]')
 plt.title('Mean temperature')
 plt.show()
+"""
 
