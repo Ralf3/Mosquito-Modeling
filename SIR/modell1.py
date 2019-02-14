@@ -63,15 +63,14 @@ class SIMU():
     def __init__(self,lat,M):
         self.sir=time_simu.SIR(lat)   # start at a latitude
         self.space=M
-        self.sir.set_init_conditions(sm=10000,lm=50000,sb=9800,ib=0)
-        self.sir.KM=300000
-        self.sir.KB=10000
-        
-#        if(np.mean(self.space.R.R)>0.6):
-#            self.sir.KM=100.0  # set the carrying capacity
-#        else:
-#            self.sir.KM=100*np.mean(self.space.R.R)
-        self.factor=1   # 100/0.01 = 100000     
+        self.sir.KM=300000  # init before init_condition !!!
+        self.sir.KB=10000   # init before init_condition !!!
+        self.sir.set_init_conditions(sm=40000,lm=20000,sb=9900,ib=0)
+        if(np.mean(self.space.R.R)<0.6):
+            f= np.mean(self.space.R.R)
+            self.sir.KM*=f
+            print('f: ',f,' KM: ', self.sir.KM)
+        self.factor=10   # KM=300000 300000/10 = 30000 als trace in space     
         self.log_file=open(path+'/Mosquito-Modeling/SIR/results/log.csv','w')
         s="t LM SM EM IM SB EB IB\n"
         self.log_file.write(s)
@@ -115,7 +114,7 @@ class SIMU():
                 nr=diff-nr
                 self.space.addD(nr,infect=False)
             self.space.step()
-            if(len(self.space.m)>100):
+            if(len(self.space.m)>10):
                 self.sir.SM=(len(self.space.m)-len(self.space.infected))*self.factor
                 if(self.highestm<len(self.space.m)):
                     self.m = self.space.get_matrixm()
@@ -135,20 +134,20 @@ class SIMU():
               
 
 """ simulation part """
-M=space_simu.mosquitoes(R0)
+M=space_simu.mosquitoes(R1)
 simu=SIMU(52.0,M) 
-rt=RT.Weather(RT.r1,date(2010,1,1))
-tx=np.arange(6*365)
+rt=RT.Weather(RT.r1,date(2011,1,1))
+tx=np.arange(5*365)
 """ iterate over one year """
 T0=rt.next()
 for t in tx:
-    if(t%365==210):
-        simu.sir.IB+=10
+    if(t%365==220):
+        simu.sir.IB+=20
     T=(rt.next())*0.1+T0*0.9  # filter it
     T0=T
     simu.time_step(t,T,t%365)
     # print(t,T,t%365)
-    # simu.space_step(t)
+    simu.space_step(t)
 
 simu.save_matrix()
 simu.log_file.close()

@@ -95,8 +95,8 @@ plt.show()
 
 
 """ read the spactial distributed mosquitoes"""
-m=np.load(path+'SIR_new/results/matrixm.npy')
-inf=np.load(path+'SIR_new/results/matrixi.npy')
+m=np.load(path+'results/matrixm.npy')
+inf=np.load(path+'results/matrixi.npy')
 
 plt.figure(figsize=(12,12))
 plt.imshow(m)

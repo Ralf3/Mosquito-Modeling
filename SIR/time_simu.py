@@ -171,11 +171,20 @@ class SIR:
     
     def set_init_conditions(self,lm=10000.0,sm=25000.0,im=0.0,sb=9500.0,ib=0.0):
         """ init the simulation by setting the starting parameters """
-        self.SM = sm     # start mosquitoes
-        self.LM = lm     # larve 
+        if(sm<self.KM):
+            self.SM = sm     # start mosquitoes
+        else:
+            self.SM=self.KM/2
+        if(lm<self.KM):
+            self.LM = lm     # larve
+        else:
+            self.LM=self.KM/2
         self.EM = 0.0    # expected mosquitos
         self.IM = im     # infected mosquitos
-        self.SB = sb     # start bird
+        if(sb<self.KB):
+            self.SB = sb     # start bird
+        else:
+            self.SB=self.KB/2
         self.EB = 0.0    # expected bird
         self.IB = ib     # infected bird
         self.RB = 0.0    # recovered bird
@@ -219,7 +228,7 @@ class SIR:
         self.IB += self.gammaB*EB - self.alphaB*IB - self.mB*IB #ok
         self.RB += (1-self.nuB)*self.alphaB*IB-self.mB*RB #ok
         self.DB += self.nuB*self.alphaB*self.IB 
-        print(self.SB,self.EB,self.IB,self.RB,self.DB)
+        # print(self.SB,self.EB,self.IB,self.RB,self.DB)
          
         """mosquito pop"""
         NM = SM+EM+IM # sum of all mosquitoes in all states
@@ -227,7 +236,7 @@ class SIR:
         self.SM += -self.lambdaBM(T,dayOfYear) * SM + self.bM(T) *self.LM -self.mM(T) * SM
         self.EM += self.lambdaBM(T,dayOfYear)*SM - self.gammaM(T)*EM - self.mM(T) *EM
         self.IM += self.gammaM(T) * self.EM - self.mM(T) * IM 
-        print(self.LM,self.SM,self.EM,self.IM)
+        # print(self.LM,self.SM,self.EM,self.IM)
         
         # check of valid 
         if self.SM<0 :

@@ -132,7 +132,7 @@ class mosquitoes:
                     self.distribution[i,j]+=1
                     k1=np.random.randint(0,5)
                     k2=np.random.randint(0,5)
-                    width=np.random.randint(1,8)
+                    width=np.random.randint(1,5)
                     m=mosquito(i*5+k1,j*5+k2,width,0,self.R,infect=infect)
                     self.m.append(m)
                     if(infect==True):
@@ -163,7 +163,7 @@ class mosquitoes:
             self.matrix[m.i,m.j]+=1
         for m in self.m:
             # test if jump is useful
-            if(self.R.get(m.i,m.j)<0.95 or self.d8(m.i,m.j)>80):
+            if(self.R.get(m.i,m.j)<0.95): # or self.d8(m.i,m.j)>50):
                 jump_tag=m.jump()
                 if(jump_tag==False):
                     migrate+=1
