@@ -65,11 +65,13 @@ class SIMU():
         self.space=M
         self.sir.KM=300000  # init before init_condition !!!
         self.sir.KB=10000   # init before init_condition !!!
-        self.sir.set_init_conditions(sm=40000,lm=20000,sb=9900,ib=0)
+        
         if(np.mean(self.space.R.R)<0.6):
             f= np.mean(self.space.R.R)
-            self.sir.KM*=f
+            self.sir.KM=int(self.sir.KM*f)
             print('f: ',f,' KM: ', self.sir.KM)
+
+        self.sir.set_init_conditions(sm=4000,lm=2000,sb=9900,ib=0)
         self.factor=10   # KM=300000 300000/10 = 30000 als trace in space     
         self.log_file=open(path+'/Mosquito-Modeling/SIR/results/log.csv','w')
         s="t LM SM EM IM SB EB IB\n"
@@ -94,6 +96,7 @@ class SIMU():
         print(s)
         # save the log
         self.log_file.write(s)
+
         
     def space_step(self,t):
         mosquitoes=self.sir.SM+self.sir.EM+self.sir.IM
@@ -129,7 +132,7 @@ class SIMU():
             # print(t,':',self.sir.SM,self.sir.LM,self.sir.EM,self.sir.IM)
     def save_matrix(self):
         np.save(path+'/Mosquito-Modeling/SIR/results/matrixm.npy',self.m)
-        np.save(path+'/Mosquito-Modeling/SIR/results/matrixi.npy',self.inf)
+        # np.save(path+'/Mosquito-Modeling/SIR/results/matrixi.npy',self.inf)
         
               
 
@@ -141,7 +144,7 @@ tx=np.arange(5*365)
 """ iterate over one year """
 T0=rt.next()
 for t in tx:
-    if(t%365==220):
+    if(t%365==240):
         simu.sir.IB+=20
     T=(rt.next())*0.1+T0*0.9  # filter it
     T0=T

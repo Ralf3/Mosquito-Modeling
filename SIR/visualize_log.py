@@ -96,7 +96,7 @@ plt.show()
 
 """ read the spactial distributed mosquitoes"""
 m=np.load(path+'results/matrixm.npy')
-inf=np.load(path+'results/matrixi.npy')
+# inf=np.load(path+'results/matrixi.npy')
 
 plt.figure(figsize=(12,12))
 plt.imshow(m)
@@ -105,8 +105,8 @@ plt.title('Mosquito distribution')
 plt.show()
 
 
-plt.figure(figsize=(12,12))
-plt.imshow(inf)
-plt.colorbar()
-plt.title('Infected distribution')
-plt.show()
+#plt.figure(figsize=(12,12))
+#plt.imshow(inf)
+#plt.colorbar()
+#plt.title('Infected distribution')
+#plt.show()

@@ -189,7 +189,7 @@ class SIR:
         self.IB = ib     # infected bird
         self.RB = 0.0    # recovered bird
         self.DB = 0.0    # dead bird
-        self.model=[self.LM,self.SM,self.EM,self.IM,self.SB,self.EB,self.IB,self.RB,self.DB]
+        # self.model=[self.LM,self.SM,self.EM,self.IM,self.SB,self.EB,self.IB,self.RB,self.DB]
 
     def lambdaMB(self,T, dayOfYear):
         """ transfer mosquitoes to birds """
@@ -236,16 +236,20 @@ class SIR:
         self.SM += -self.lambdaBM(T,dayOfYear) * SM + self.bM(T) *self.LM -self.mM(T) * SM
         self.EM += self.lambdaBM(T,dayOfYear)*SM - self.gammaM(T)*EM - self.mM(T) *EM
         self.IM += self.gammaM(T) * self.EM - self.mM(T) * IM 
-        # print(self.LM,self.SM,self.EM,self.IM)
+        print(T,dayOfYear,self.LM,self.SM,self.EM,self.IM)
         
         # check of valid 
         if self.SM<0 :
             self.SM=100
-        NM = self.SM+self.EM+self.IM+self.LM
+        NM = self.SM+self.EM+self.IM
         if NM<self.NMmin : 
-            self.SM = SM 
-            self.EM = EM
-            self.IM = IM
+            self.SM = 100
+        if(self.EM<0):
+            self.EM = 0.1
+        if(self.IM<0):
+            self.IM = 0.1
+        if(self.LM<0):
+            self.LM = 0.1
             
 import pylab as plt       
 def show_tests():
