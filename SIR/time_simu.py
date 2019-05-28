@@ -236,7 +236,7 @@ class SIR:
         self.SM += -self.lambdaBM(T,dayOfYear) * SM + self.bM(T) *self.LM -self.mM(T) * SM
         self.EM += self.lambdaBM(T,dayOfYear)*SM - self.gammaM(T)*EM - self.mM(T) *EM
         self.IM += self.gammaM(T) * self.EM - self.mM(T) * IM 
-        print(T,dayOfYear,self.LM,self.SM,self.EM,self.IM)
+        # print(T,dayOfYear,self.LM,self.SM,self.EM,self.IM)
         
         # check of valid 
         if self.SM<0 :

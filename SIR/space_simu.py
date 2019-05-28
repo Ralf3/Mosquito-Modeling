@@ -34,6 +34,7 @@ class region:
         return self.R[i,j]
     
     def show(self):
+        plt.figure(figsize=(12,12))
         plt.imshow(self.R)
         plt.colorbar()
         plt.show()
@@ -71,10 +72,10 @@ class mosquito:
         height,width=self.R.get_shape()
         i=np.random.randint(-self.width,self.width+1)
         j=np.random.randint(-self.width,self.width+1)
+        if((self.i+i)<0 or (self.i+i)>=height or (self.j+j)<0 or (self.j+j)>=width):
+            return False
         self.i+=i   # my new row position (y-direction)
         self.j+=j   # my new column position (x-direction)
-        if(self.i<0 or self.i>=height or self.j<0 or self.j>=width):
-            return False
         self.energy-=(np.abs(i)+np.abs(j))  # energy lost during the flight
         self.energy+=20*self.R.get(self.i,self.j)    # energy gain from R
         if(self.energy>100.0):
@@ -167,7 +168,8 @@ class mosquitoes:
                 jump_tag=m.jump()
                 if(jump_tag==False):
                     migrate+=1
-                if(not(jump_tag==False or m.energy<5)):
+                # if(not(jump_tag==False or m.energy<5)):
+                if(m.energy>=5):
                     L.append(m) # only if the jump was valid the mosquito survives
                 else:
                     try:
